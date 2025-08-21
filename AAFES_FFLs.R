@@ -1,17 +1,39 @@
 #Setup
 rm(list=ls())
 
-setwd("/Users/jasirrahman/Desktop/Career/Brady Documents/Military Exchanges/")
-#Dataset source: ATF FFL Complete List (last updated January 2024)
-#https://www.atf.gov/firearms/listing-federal-firearms-licensees/complete 
-data_24 <- read.csv("/Users/jasirrahman/Desktop/Career/Brady Documents/Military Exchanges/0124-ffl-list-complete.csv")
-data_21 <- read.csv("/Users/jasirrahman/Desktop/Career/Brady Documents/Military Exchanges/0121-ffl-list.csv")
-data_18 <- read.csv("/Users/jasirrahman/Desktop/Career/Brady Documents/Military Exchanges/0118-ffl-list.csv")
+setwd('/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges')
+#Dataset source: ATF FFL Complete List (last updated January 2025)
+#https://www.atf.gov/firearms/listing-federal-firearms-licensees/complete
+data_25 <- read.csv('/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/0125-ffl-list-complete.csv')
+data_24 <- read.csv('/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/0124-ffl-list-complete.csv')
+data_21 <- read.csv('/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/0121-ffl-list.csv')
+data_18 <- read.csv('/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/0118-ffl-list.csv')
 #Load packages
 library(dplyr)
 library(stringr)
 library(openxlsx)
 
+## Filter data for FFLs w/ LICENSE_NAME that are related to exchange services
+df_25 <- data_25 %>% 
+  filter(str_detect(LICENSE_NAME, "ARMY & AIR FORCE EXCHANGE SERVICE"))
+aafes <- data_25 %>% 
+  filter(str_detect(LICENSE_NAME, "AAFES"))
+mcx <- data_25 %>% 
+  filter(str_detect(LICENSE_NAME, "MARINE CORPS"))
+af <- data_25 %>% 
+  filter(str_detect(LICENSE_NAME, "AIR FORCE"))
+cgx <- data_25 %>% 
+  filter(str_detect(LICENSE_NAME, "COAST GUARD"))
+
+#Concatenate  filtered dfs
+df_25 <- rbind(df_25, aafes, mcx, af, cgx)
+#Remove duplicates
+df_25 <- unique(df_25)
+
+##Writing df --> .xlsl
+write.xlsx(df_25, '/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/military_exchange_ffls_0125.xlsx')
+
+## Replicate for 2024
 ## Filter data for FFLs w/ LICENSE_NAME that are related to exchange services
 df_24 <- data_24 %>% 
   filter(str_detect(LICENSE_NAME, "ARMY & AIR FORCE EXCHANGE SERVICE"))
@@ -30,7 +52,7 @@ df_24 <- rbind(df_24, aafes, mcx, af, cgx)
 df_24 <- unique(df_24)
 
 ##Writing df --> .xlsl
-write.xlsx(df_24, "/Users/jasirrahman/Desktop/Career/Brady Documents/Military Exchanges/military_exchange_ffls_0124.xlsx")
+write.xlsx(df_24, '/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/military_exchange_ffls_0124.xlsx')
 
 ## Replicate for df_21
 df_21 <- data_21 %>% 
@@ -49,7 +71,7 @@ df_21 <- rbind(df_21, aafes, mcx, af, cgx)
 #Remove duplicates
 df_21 <- unique(df_21)
 ##Writing df --> .xlsx
-write.xlsx(df_21, "/Users/jasirrahman/Desktop/Career/Brady Documents/Military Exchanges/military_exchange_ffls_0121.xlsx")
+write.xlsx(df_21, '/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/military_exchange_ffls_0121.xlsx')
 
 ## Replicate for df_18
 df_18 <- data_18 %>% 
@@ -68,5 +90,5 @@ df_18 <- rbind(df_18, aafes, mcx, af, cgx)
 #Remove duplicates
 df_18 <- unique(df_18)
 ##Writing df --> .xlsx
-write.xlsx(df_18, "/Users/jasirrahman/Desktop/Career/Brady Documents/Military Exchanges/military_exchange_ffls_0118.xlsx")
+write.xlsx(df_18, '/Users/jasirrahman/Desktop/Brady/Projects:Tasks/Military Exchanges/military_exchange_ffls_0118.xlsx')
 
